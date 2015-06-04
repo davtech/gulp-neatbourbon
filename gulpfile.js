@@ -29,7 +29,7 @@ var pagespeed = require('psi');
 var reload = browserSync.reload;
 
 var AUTOPREFIXER_BROWSERS = [
-  'ie >= 10',
+  'ie >= 9',
   'ie_mob >= 10',
   'ff >= 30',
   'chrome >= 34',
@@ -42,7 +42,7 @@ var AUTOPREFIXER_BROWSERS = [
 
 // Lint JavaScript
 gulp.task('jshint', function () {
-  return gulp.src('app/scripts/**/*.js')
+  return gulp.src('app/js/**/*.js')
     .pipe(reload({stream: true, once: true}))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
@@ -51,12 +51,12 @@ gulp.task('jshint', function () {
 
 // Optimize images
 gulp.task('images', function () {
-  return gulp.src('app/images/**/*')
+  return gulp.src('app/img/**/*')
     .pipe($.cache($.imagemin({
       progressive: true,
       interlaced: true
     })))
-    .pipe(gulp.dest('dist/images'))
+    .pipe(gulp.dest('dist/img'))
     .pipe($.size({title: 'images'}));
 });
 
@@ -83,22 +83,22 @@ gulp.task('fonts', function () {
 gulp.task('styles', function () {
   // For best performance, don't add Sass partials to `gulp.src`
   return gulp.src([
-    'app/styles/*.scss',
-    'app/styles/**/*.css',
-    'app/styles/components/components.scss'
+    'app/css/*.scss',
+    'app/css/**/*.css',
+    'app/css/components/components.scss'
   ])
     .pipe($.sourcemaps.init())
-    .pipe($.changed('.tmp/styles', {extension: '.css'}))
+    .pipe($.changed('.tmp/css', {extension: '.css'}))
     .pipe($.sass({
       precision: 10,
       onError: console.error.bind(console, 'Sass error:')
     }))
     .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
     .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('.tmp/styles'))
+    .pipe(gulp.dest('.tmp/css'))
     // Concatenate and minify styles
     .pipe($.if('*.css', $.csso()))
-    .pipe(gulp.dest('dist/styles'))
+    .pipe(gulp.dest('dist/css'))
     .pipe($.size({title: 'styles'}));
 });
 
@@ -155,9 +155,9 @@ gulp.task('serve', ['styles'], function () {
   });
 
   gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/styles/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['app/scripts/**/*.js'], ['jshint']);
-  gulp.watch(['app/images/**/*'], reload);
+  gulp.watch(['app/css/**/*.{scss,css}'], ['styles', reload]);
+  gulp.watch(['app/js/**/*.js'], ['jshint']);
+  gulp.watch(['app/img/**/*'], reload);
 });
 
 // Build and serve the output from the dist build
